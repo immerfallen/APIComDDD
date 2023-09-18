@@ -1,5 +1,7 @@
 using Api.CrossCutting.DependencyInjection;
 using Api.Domain.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,13 +28,36 @@ namespace Api.application
             ConfigureService.ConfigureDependenciesService(services);
             ConfigureRepository.ConfigureDependenciesRepository(services);
 
-            var singningConfigurations = new SignInConfigurations();
-            services.AddSingleton(singningConfigurations);
+            var signingConfigurations = new SignInConfigurations();
+            services.AddSingleton(signingConfigurations);
 
             var tokensConfigurations = new TokenConfiguration();
             new ConfigureFromConfigurationOptions<TokenConfiguration>(Configuration.GetSection("TokenConfigurations"))
                 .Configure(tokensConfigurations);
             services.AddSingleton(tokensConfigurations);
+
+            services.AddAuthentication(authoptions =>
+            {
+                authoptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                authoptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(bearerOptions=>
+            {
+                var paramsValidation = bearerOptions.TokenValidationParameters;
+                paramsValidation.IssuerSigningKey = signingConfigurations.Key;
+                paramsValidation.ValidAudience = tokensConfigurations.Audience;
+                paramsValidation.ValidIssuer = tokensConfigurations.Issuer;
+                paramsValidation.ValidateIssuerSigningKey = true;
+                paramsValidation.ValidateLifetime = true;
+                paramsValidation.ClockSkew = TimeSpan.Zero;
+
+            });
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser().Build());
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
