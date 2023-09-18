@@ -1,9 +1,7 @@
-﻿using Api.Domain.Entities;
+﻿using Api.Domain.DTOs;
 using Api.Domain.Interfaces.Services.User;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -15,19 +13,19 @@ namespace Api.application.Controllers
     {
         [HttpPost]
         //feito injeção do serviço direto no parâmetro 
-        public async Task<object> Login([FromBody] UserEntity userEntity, [FromServices] ILoginService service)
+        public async Task<object> Login([FromBody] LoginDTO login, [FromServices] ILoginService service)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if(userEntity == null)
+            if(login == null)
             {
                 return BadRequest();
             }
             try
             {
-                var result = await service.FindByLogin(userEntity);
+                var result = await service.FindByLogin(login);
                 if(result!= null)
                 {
                     return Ok(result);

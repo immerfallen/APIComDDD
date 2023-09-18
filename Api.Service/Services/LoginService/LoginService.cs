@@ -1,10 +1,6 @@
-﻿using Api.Domain.Entities;
+﻿using Api.Domain.DTOs;
 using Api.Domain.Interfaces.Services.User;
 using Api.Domain.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Api.Service.Services.LoginService
@@ -17,7 +13,7 @@ namespace Api.Service.Services.LoginService
         {
             _repository = repository;
         }
-        public async Task<object> FindByLogin(UserEntity user)
+        public async Task<object> FindByLogin(LoginDTO user)
         {           
             if (user != null && !string.IsNullOrWhiteSpace(user.Email))
             {
