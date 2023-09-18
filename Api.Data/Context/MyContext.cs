@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Api.Data.Context
 {
-    class MyContext : DbContext
+    public class MyContext : DbContext
     {
         public DbSet<UserEntity> User { get; set; }
         public MyContext(DbContextOptions options) : base(options)
