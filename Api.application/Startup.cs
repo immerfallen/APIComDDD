@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace Api.application
 {
@@ -27,7 +28,20 @@ namespace Api.application
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api.application", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "Curso API", 
+                    Version = "v1", 
+                    Description = "Arquitetura DDD", 
+                    TermsOfService = new Uri("http://www.maro.com.br"), 
+                    Contact = new OpenApiContact() {
+                        Name= "Maro de Melo",
+                        Email = "maro@gmail.com"
+                },
+                    License = new OpenApiLicense()
+                    {
+                        Name= "teste"
+                    }
+                });
             });
         }
 
