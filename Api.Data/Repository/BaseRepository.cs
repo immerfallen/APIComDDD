@@ -4,8 +4,6 @@ using Api.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Api.Data.Repository
@@ -28,7 +26,7 @@ namespace Api.Data.Repository
         {
             try
             {
-                if(item.Id == Guid.Empty)
+                if (item.Id == Guid.Empty)
                 {
                     item.Id = Guid.NewGuid();
                 }
@@ -43,7 +41,7 @@ namespace Api.Data.Repository
                 throw ex;
             }
 
-            return  item;
+            return item;
         }
 
         public Task<T> SelectAsync(Guid id)
@@ -56,9 +54,29 @@ namespace Api.Data.Repository
             throw new NotImplementedException();
         }
 
-        public Task<T> UpdateAsync(T item)
+        public async Task<T> UpdateAsync(T item)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _dataSet.SingleOrDefaultAsync(p => p.Id == item.Id);
+                if (result == null)
+                {
+                    return null;
+                }
+
+                item.UpdatedAt = DateTime.UtcNow;
+                item.CreatedAt = result.CreatedAt;
+
+                _context.Entry(result).CurrentValues.SetValues(item);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return item;
         }
     }
 }
