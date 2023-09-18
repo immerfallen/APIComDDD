@@ -76,7 +76,7 @@ namespace Api.Service.Services.LoginService
             var securityToken = handler.CreateToken(new SecurityTokenDescriptor
             {
                 Issuer = _tokenconfiguration.Issuer,
-                Audience = _tokenconfiguration.Issuer,
+                Audience = _tokenconfiguration.Audience,
                 SigningCredentials = _signingConfigurations.SigningCredentials,
                 Subject = identity,
                 NotBefore = createdDate,

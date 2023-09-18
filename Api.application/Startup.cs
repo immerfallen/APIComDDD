@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Api.application
 {
@@ -24,7 +25,7 @@ namespace Api.application
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {            
+        {
             ConfigureService.ConfigureDependenciesService(services);
             ConfigureRepository.ConfigureDependenciesRepository(services);
 
@@ -40,7 +41,7 @@ namespace Api.application
             {
                 authoptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 authoptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(bearerOptions=>
+            }).AddJwtBearer(bearerOptions =>
             {
                 var paramsValidation = bearerOptions.TokenValidationParameters;
                 paramsValidation.IssuerSigningKey = signingConfigurations.Key;
@@ -62,18 +63,39 @@ namespace Api.application
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
-                    Title = "Curso API", 
-                    Version = "v1", 
-                    Description = "Arquitetura DDD", 
-                    TermsOfService = new Uri("http://www.maro.com.br"), 
-                    Contact = new OpenApiContact() {
-                        Name= "Maro de Melo",
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Curso API",
+                    Version = "v1",
+                    Description = "Arquitetura DDD",
+                    TermsOfService = new Uri("http://www.maro.com.br"),
+                    Contact = new OpenApiContact()
+                    {
+                        Name = "Maro de Melo",
                         Email = "maro@gmail.com"
-                },
+                    },
                     License = new OpenApiLicense()
                     {
-                        Name= "teste"
+                        Name = "teste"
+                    }
+                });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Entre com o token JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Id= "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        }, new List<string>()
                     }
                 });
             });
