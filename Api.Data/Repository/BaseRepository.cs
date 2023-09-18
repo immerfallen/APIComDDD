@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Api.Data.Repository
 {
-    class BaseRepository<T> : IRepository<T> where T : BaseEntity
+    public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     {
         protected readonly MyContext _context;
         private DbSet<T> _dataSet;
