@@ -41,7 +41,7 @@ namespace Api.Service.Services.UserService
             return _mapper.Map<List<UserDTO>>(entities);
         }
 
-        public async Task<UserDTOCreateResult> Post(UserDTO user)
+        public async Task<UserDTOCreateResult> Post(UserDTOCreate user)
         {
             var userModel = _mapper.Map<UserModel>(user);
             var modelEntity = _mapper.Map<UserEntity>(userModel);
@@ -49,7 +49,7 @@ namespace Api.Service.Services.UserService
             return _mapper.Map<UserDTOCreateResult>(result);
         }
 
-        public async Task<UserDTOUpdateResult> Put(UserDTO user)
+        public async Task<UserDTOUpdateResult> Put(UserDTOUpdate user)
         {
             var userModel = _mapper.Map<UserModel>(user);
             var modelEntity = _mapper.Map<UserEntity>(userModel);

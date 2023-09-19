@@ -13,8 +13,13 @@ namespace Api.CrossCutting.Mappings
     {
         public EntityToDTOProfile()
         {
-            CreateMap<UserDTO, UserEntity>()
+            CreateMap<UserDTOCreate, UserEntity>()
                 .ReverseMap();
+                CreateMap<UserDTO, UserEntity>()
+                .ReverseMap();
+            CreateMap<UserDTOUpdate, UserEntity>()
+                .ReverseMap();
+
 
             CreateMap<UserDTOCreateResult, UserEntity>()
                 .ReverseMap();
