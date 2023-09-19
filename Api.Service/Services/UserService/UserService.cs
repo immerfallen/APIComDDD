@@ -32,7 +32,7 @@ namespace Api.Service.Services.UserService
         public async Task<UserDTO> Get(Guid id)
         {
             var entity = await _repository.SelectAsync(id);
-            return _mapper.Map<UserDTO>(entity);
+            return _mapper.Map<UserDTO>(entity) ?? new UserDTO();
         }
 
         public async Task<IEnumerable<UserDTO>> GetAll()
