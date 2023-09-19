@@ -5,6 +5,7 @@ using Api.Domain.Interfaces;
 using Api.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Api.CrossCutting.DependencyInjection
 {
@@ -16,7 +17,11 @@ namespace Api.CrossCutting.DependencyInjection
 
             serviceCollection.AddScoped<IUserRepository, UserImplementation>();
 
-            serviceCollection.AddDbContext<MyContext>(options => options.UseSqlServer("Server = (localdb)\\mssqllocaldb; Database = dbAPI; Trusted_Connection = True; MultipleActiveResultSets = true"));
+            if(Environment.GetEnvironmentVariable("DATABASE").ToLower() == "SQLSERVER".ToLower() ) {
+                serviceCollection.AddDbContext<MyContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("DB_CONNECTION").ToLower()));
+            }
+
+           
         }
     }
 }
