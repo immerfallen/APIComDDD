@@ -36,7 +36,33 @@ namespace Api.Data.Test
                 Assert.NotNull(_registroCriado);
                 Assert.Equal(_entity.Email, _registroCriado.Email);
                 Assert.Equal(_entity.Name, _registroCriado.Name);
-                Assert.False(_registroCriado.Id == Guid.Empty);
+                Assert.True(_registroCriado.Id != Guid.Empty);
+
+                _entity.Name = Faker.Name.First();
+                var _registroAtualizado = await _repository.UpdateAsync(_entity);
+                Assert.NotNull(_registroAtualizado);
+                Assert.Equal(_entity.Name, _registroAtualizado.Name);
+                Assert.Equal(_entity.Email, _registroAtualizado.Email);
+
+                var _registroExiste = await _repository.ExistAsync(_registroAtualizado.Id);
+                Assert.True(_registroExiste);
+
+                var _registroSelecionado = await _repository.SelectAsync(_registroAtualizado.Id);
+                Assert.NotNull(_registroSelecionado);
+                Assert.Equal(_registroSelecionado.Name, _registroAtualizado.Name);
+                Assert.Equal(_registroSelecionado.Email, _registroAtualizado.Email);
+
+                var _todosRegistros = await _repository.SelectAsync();
+                Assert.NotNull(_todosRegistros);
+                Assert.True(_todosRegistros.Count() > 1);
+
+                var _removeu = await _repository.DeleteAsync(_registroSelecionado.Id);
+                Assert.True(_removeu);
+
+                var _usuarioPadrao = await _repository.FindByLogin("maro@gmail.com");
+                Assert.NotNull(_usuarioPadrao);
+                Assert.Equal("Maro", _usuarioPadrao.Name);
+                Assert.Equal("maro@gmail.com", _usuarioPadrao.Email);
             }
         }
     }
